@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Trường học xanh, an toàn và thông minh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Bố cục: thanh điều hướng trên cùng, 4 trang chuyển bằng hash, nền xanh lá nhạt, điểm nhấn vàng nắng */
+:root{
+  --leaf:#2E7D4F;
+  --leaf-dark:#1E5A38;
+  --mint:#E7F4EA;
+  --sun:#F2B33D;
+  --sky:#2F7F9E;
+  --ink:#1D2B24;
+  --muted:#55655B;
+  --paper:#FBFDF9;
+  --line:#CFE3D4;
+  --font-display:"Be Vietnam Pro",system-ui,sans-serif;
+  --font-body:"Be Vietnam Pro",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.6}
+/* Nền nhiều màu để kính mờ có để làm nổi bật */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 12% 18%,#b7e3c4 0,transparent 38%),radial-gradient(circle at 88% 28%,#ffd98a 0,transparent 32%),radial-gradient(circle at 60% 85%,#a8d4e6 0,transparent 40%),var(--paper)}
+h1,h2,h3{font-family:var(--font-display);line-height:1.25;text-wrap:balance;margin:0 0 .5em;color:var(--leaf-dark)}
+h1{font-size:2.1rem;font-weight:800}
+h2{font-size:1.6rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0 0 1em;max-width:65ch}
+a{color:var(--sky)}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:4px}
+
+/* Thanh điều hướng */
+.topbar{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 60%),rgba(30,90,56,.5);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);color:#fff;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(255,255,255,.12),0 10px 26px -12px rgba(20,60,35,.55)}
+.topbar-inner{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0}
+.brand{font-family:var(--font-display);font-weight:800;font-size:1rem;letter-spacing:.2px}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav a{color:#fff;text-decoration:none;padding:6px 12px;border-radius:999px;font-size:.92rem;font-weight:600;opacity:.88}
+.nav a:hover{opacity:1;background:rgba(255,255,255,.14)}
+.nav a[aria-current="page"]{background:rgba(255,255,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 12px -4px rgba(0,0,0,.25);opacity:1}
+
+main{max-width:1040px;margin:0 auto;padding:0 16px}
+.page{display:none;padding:40px 0 56px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.page.active{display:block;animation:fadeUp .5s cubic-bezier(.2,.7,.3,1)}
+.page.active .card,.page.active .bin,.page.active .hero,.page.active .tip{animation:fadeUp .55s cubic-bezier(.2,.7,.3,1) both}
+.page.active .grid .card:nth-child(2),.page.active .bins .bin:nth-child(2){animation-delay:.08s}
+.page.active .grid .card:nth-child(3),.page.active .bins .bin:nth-child(3){animation-delay:.16s}
+.nav a{transition:background .25s ease,opacity .25s ease,color .25s ease}
+
+/* Trang 1: hero và thông tin */
+.hero{background:linear-gradient(135deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.14) 42%,rgba(255,255,255,.3) 100%);backdrop-filter:blur(24px) saturate(200%) brightness(1.04);-webkit-backdrop-filter:blur(24px) saturate(200%) brightness(1.04);border:1px solid rgba(255,255,255,.7);box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(255,255,255,.25),inset 0 0 18px rgba(255,255,255,.35),0 22px 44px -22px rgba(30,90,56,.5),0 2px 6px rgba(20,60,35,.06);border-radius:20px;padding:36px 32px;margin-bottom:28px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center}
+.hero .kicker{display:inline-block;background:var(--sun);color:var(--ink);font-weight:700;font-size:.8rem;padding:4px 10px;border-radius:6px;margin-bottom:12px;letter-spacing:.3px}
+.message{background:rgba(46,125,79,.72);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 12px 28px -14px rgba(20,70,40,.6);color:#fff;border-radius:16px;padding:24px 26px}
+.message .label{font-size:.8rem;text-transform:uppercase;letter-spacing:1px;opacity:.85;margin-bottom:6px;display:block}
+.message p{font-size:1.25rem;font-weight:600;margin:0;max-width:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:28px}
+.card{background:linear-gradient(135deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.14) 45%,rgba(255,255,255,.28) 100%);backdrop-filter:blur(20px) saturate(200%) brightness(1.04);-webkit-backdrop-filter:blur(20px) saturate(200%) brightness(1.04);border:1px solid rgba(255,255,255,.7);border-radius:14px;padding:22px;box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(255,255,255,.22),inset 0 0 14px rgba(255,255,255,.3),0 14px 30px -20px rgba(30,90,56,.45),0 2px 6px rgba(20,60,35,.06);transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+.card:hover{transform:translateY(-3px);box-shadow:inset 1px 1px 0 rgba(255,255,255,1),inset -1px -1px 0 rgba(255,255,255,.3),inset 0 0 22px rgba(255,255,255,.4),0 22px 40px -18px rgba(30,90,56,.55),0 2px 6px rgba(20,60,35,.08);border-color:rgba(255,255,255,.95)}
+.bin{transition:transform .3s ease,box-shadow .3s ease}
+.bin:hover{transform:translateY(-3px);box-shadow:0 10px 22px -12px rgba(29,43,36,.3)}
+.card .num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--mint);color:var(--leaf-dark);font-weight:800;margin-bottom:10px}
+.card.accent{border-left:6px solid var(--sun)}
+ul.clean{padding-left:20px;margin:0}
+ul.clean li{margin-bottom:6px}
+
+/* Ô phân loại rác */
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.bin{border-radius:16px;padding:22px;color:var(--ink);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(20px) saturate(200%) brightness(1.04);-webkit-backdrop-filter:blur(20px) saturate(200%) brightness(1.04);box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(255,255,255,.22),inset 0 0 14px rgba(255,255,255,.3),0 14px 30px -20px rgba(30,90,56,.45)}
+.bin.recycle{background:rgba(120,180,230,.28)}
+.bin.organic{background:rgba(140,200,110,.28)}
+.bin.other{background:rgba(220,190,150,.3)}
+.bin .tag{display:inline-block;font-size:.78rem;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.7);margin-bottom:10px}
+.bin h3{color:var(--ink)}
+
+/* Trang 3 */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media (max-width:720px){.split{grid-template-columns:1fr}}
+.tip{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.tip:last-child{border-bottom:none}
+.tip .icon{flex:0 0 42px;height:42px;border-radius:12px;background:var(--mint);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--leaf-dark)}
+.tip p{margin:0}
+.extra{display:none;margin-top:26px}
+.extra.show{display:block;animation:fadeUp .7s cubic-bezier(.2,.7,.3,1)}
+.extra-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:720px){.extra-grid{grid-template-columns:1fr}}
+.card.swap{cursor:pointer}
+.card.swap img{display:block;width:100%;height:auto;border-radius:12px}
+.card.swapped{padding:0;overflow:hidden;border:1px solid var(--line)}
+
+/* Trang 4 */
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line);font-size:.95rem}
+th,td{text-align:left;padding:12px 14px;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--mint);color:var(--leaf-dark)}
+tr:last-child td{border-bottom:none}
+.table-wrap{overflow-x:auto;margin-bottom:28px}
+
+.survey{background:linear-gradient(135deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.14) 45%,rgba(255,255,255,.28) 100%);backdrop-filter:blur(24px) saturate(200%) brightness(1.04);-webkit-backdrop-filter:blur(24px) saturate(200%) brightness(1.04);border:1px solid rgba(255,255,255,.7);box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(255,255,255,.22),inset 0 0 14px rgba(255,255,255,.3),0 18px 36px -22px rgba(30,90,56,.5);border-radius:18px;padding:28px;margin-top:32px}
+.q{border:none;padding:0;margin:0 0 22px}
+.q legend{font-weight:700;margin-bottom:10px;font-family:var(--font-display);color:var(--ink);padding:0}
+.opt{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;background:rgba(255,255,255,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+.opt{transition:border-color .2s ease,background .2s ease}
+.opt:hover{border-color:var(--leaf)}
+.opt:has(input:checked){border-color:rgba(255,255,255,.9);background:rgba(46,125,79,.22)}
+.opt input{accent-color:var(--leaf);width:18px;height:18px;margin:0}
+.scale{display:flex;gap:8px;flex-wrap:wrap}
+.scale .opt{flex:1 1 60px;justify-content:center;margin:0}
+textarea{width:100%;min-height:86px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;background:var(--paper);color:var(--ink);resize:vertical}
+button{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 55%),var(--leaf);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.5);border:none;border-radius:10px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer;transition:background .25s ease,transform .15s ease,box-shadow .25s ease}
+button:active{transform:scale(.97)}
+button:hover{background:var(--leaf-dark);box-shadow:0 6px 16px -8px rgba(30,90,56,.6)}
+.error{color:#A23B2A;font-weight:600;min-height:1.4em;margin:8px 0 0}
+.results{margin-top:28px;display:none}
+.results.show{display:block;animation:fadeUp .6s cubic-bezier(.2,.7,.3,1)}
+.bar-row{display:grid;grid-template-columns:minmax(120px,200px) 1fr 44px;gap:10px;align-items:center;margin-bottom:8px;font-size:.92rem}
+.bar-track{background:var(--mint);border-radius:999px;height:14px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--leaf),var(--sky));border-radius:999px;width:0;transition:width .9s cubic-bezier(.2,.7,.3,1)}
+.bar-val{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.chart-title{font-weight:700;margin:18px 0 8px;font-family:var(--font-display)}
+.note{font-size:.9rem;color:var(--muted)}
+
+footer{background:var(--ink);color:#dfe9e2;text-align:center;padding:22px 16px;font-size:.9rem}
+
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr;padding:26px 20px}
+  h1{font-size:1.7rem}
+  .page{padding:28px 0 40px}
+  .bar-row{grid-template-columns:1fr 36px}
+  .bar-row .bar-track{grid-column:1 / -1;order:3}
+}
+/* Hiệu ứng chữ hiện dần khi lướt tới */
+.js .reveal{opacity:0;transform:translateY(14px);filter:blur(3px);transition:opacity .6s cubic-bezier(.22,.61,.36,1),transform .6s cubic-bezier(.22,.61,.36,1),filter .6s cubic-bezier(.22,.61,.36,1);transition-delay:var(--d,0ms)}
+.js .reveal.in{opacity:1;transform:none;filter:none}
+@media (prefers-reduced-transparency:reduce){
+  .topbar{background:var(--leaf)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .hero,.card,.bin,.survey,.opt{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">Trường học xanh</div>
+    <nav class="nav" aria-label="Điều hướng trang">
+      <a href="#trang-chu" data-nav="trang-chu">Trang chủ</a>
+      <a href="#phan-loai-rac" data-nav="phan-loai-rac">Phân loại rác</a>
+      <a href="#tiet-kiem" data-nav="tiet-kiem">Điện, nước, cây xanh</a>
+      <a href="#khao-sat" data-nav="khao-sat">Nguồn & khảo sát</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- TRANG 1: TRANG CHỦ -->
+  <section class="page" id="trang-chu" aria-label="Trang chủ">
+    <div class="hero">
+      <div>
+        <span class="kicker">DỰ ÁN STEAM</span>
+        <h1>Trường học xanh, an toàn và thông minh</h1>
+        <p>Trang web giúp học sinh, thầy cô và phụ huynh biết cách phân loại rác, tiết kiệm điện nước và chăm sóc cây xanh ngay trong trường mình.</p>
+      </div>
+      <div class="message">
+        <span class="label">Thông điệp chính</span>
+        <p>Mỗi hành động nhỏ của em, từ bỏ rác đúng chỗ đến tắt đèn khi ra khỏi lớp, làm trường mình xanh hơn mỗi ngày.</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="card accent">
+        <span class="num">1</span>
+        <h3>Vấn đề cần giải quyết</h3>
+        <p>Thùng rác chung ở sân trường thường đựng lẫn giấy, chai nhựa và thức ăn thừa. Đèn và quạt trong lớp vẫn bật suốt giờ ra chơi khi lớp không còn ai.</p>
+      </article>
+      <article class="card">
+        <span class="num">2</span>
+        <h3>Người dùng chính</h3>
+        <ul class="clean">
+          <li>Học sinh khối 4 và 5 cần cách làm đơn giản, dễ nhớ.</li>
+          <li>Giáo viên chủ nhiệm cần tài liệu để tổ chức hoạt động lớp.</li>
+          <li>Phụ huynh cần biết trường đang làm gì để cùng nhắc con.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <span class="num">3</span>
+        <h3>Mục tiêu của website</h3>
+        <p>Sau khi xem trang, người dùng phân loại được ba nhóm rác, nêu được ba việc tiết kiệm điện nước và biết cách chăm một cây xanh trong trường.</p>
+      </article>
+    </div>
+
+    <p class="note">Nội dung trang 1 mô tả một tình huống mẫu. Thầy cô có thể thay bằng vấn đề thật đang xảy ra ở lớp hoặc trường.</p>
+  </section>
+
+  <!-- TRANG 2: PHÂN LOẠI RÁC -->
+  <section class="page" id="phan-loai-rac" aria-label="Phân loại rác">
+    <h2>Phân loại rác tại trường</h2>
+    <p>Trường có ba nhóm rác sinh hoạt chính. Hãy bỏ đúng thùng ngay từ đầu để rác tái chế không bị bẩn và rác hữu cơ không bị lẫn vào nhựa.</p>
+
+    <div class="bins">
+      <div class="bin recycle">
+        <span class="tag">Thùng xanh dương</span>
+        <h3>Rác tái chế</h3>
+        <ul class="clean">
+          <li>Giấy, bìa carton sạch, hộp sữa giấy đã rửa sạch</li>
+          <li>Chai nhựa đã rửa sạch</li>
+          <li>Lon nước ngọt bằng nhôm</li>
+        </ul>
+      </div>
+      <div class="bin organic">
+        <span class="tag">Thùng xanh lá</span>
+        <h3>Rác hữu cơ</h3>
+        <ul class="clean">
+          <li>Thức ăn thừa, vỏ trái cây</li>
+          <li>Lá cây, cành cây nhỏ</li>
+          <li>Có thể làm phân ủ ở góc vườn trường</li>
+        </ul>
+      </div>
+      <div class="bin other">
+        <span class="tag">Thùng còn lại</span>
+        <h3>Rác khác</h3>
+        <ul class="clean">
+          <li>Khăn giấy đã dùng, giấy ăn bẩn</li>
+          <li>Túi nilon, bao bì bẩn khó tái chế</li>
+          <li>Pin, bóng đèn hỏng: nộp riêng, không bỏ chung</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:24px">
+      <h3>Mẹo nhớ nhanh</h3>
+      <p>Trước khi bỏ rác, em hỏi ba câu: Vật này còn sạch không? Có phải giấy, nhựa hay lon không? Có phải thức ăn hoặc lá cây không? Nếu đúng, bỏ vào thùng tương ứng.</p>
+    </div>
+
+    <div class="card" style="margin-top:22px">
+      <h3>Lỗi thường gặp khi phân loại</h3>
+      <ul class="clean">
+        <li>Đổ nước còn trong chai nhựa vào thùng: nên úp chai cho ráo nước trước khi bỏ.</li>
+        <li>Bỏ túi nilon hoặc khăn giấy bẩn vào thùng tái chế, làm bẩn cả mẻ giấy và nhựa.</li>
+        <li>Bỏ thức ăn thừa vào thùng nhựa: thức ăn làm bẩn nhựa sạch và khó tái chế.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:22px;border-left:6px solid var(--sky)">
+      <h3>Video tham khảo</h3>
+      <p>Xem video về phân loại rác để củng cố những gì vừa học.</p>
+      <p><a href="https://vtv.vn/video/phong-su-rac-thai-nhua-dung-mot-lan-kho-phan-huy-585706.htm" target="_blank" rel="noopener">Video 1: Phóng sự rác thải nhựa (VTV)</a></p>
+      <p><a href="https://www.youtube.com/watch?v=2tPtwFs-gEQ" target="_blank" rel="noopener">Video 2: Xem trên YouTube</a></p>
+    </div>
+  </section>
+
+  <!-- TRANG 3: TIẾT KIỆM ĐIỆN NƯỚC VÀ CÂY XANH -->
+  <section class="page" id="tiet-kiem" aria-label="Tiết kiệm điện nước và cây xanh">
+    <h2>Tiết kiệm điện, nước và chăm cây xanh</h2>
+    <p>Ba nhóm việc dưới đây không tốn kém, nhưng nếu cả trường cùng làm thì lượng điện và nước tiết kiệm được rất đáng kể.</p>
+
+    <div class="split">
+      <div class="card swap" data-img="images/tiet-kiem-dien.jpg" data-alt="Infographic các cách tiết kiệm điện hiệu quả trong mùa hè">
+        <h3>Tiết kiệm điện</h3>
+        <div class="tip"><span class="icon">1</span><p>Tắt đèn, quạt khi ra khỏi lớp, kể cả giờ ra chơi ngắn.</p></div>
+        <div class="tip"><span class="icon">2</span><p>Mở cửa sổ để lấy sáng tự nhiên khi thời tiết tốt.</p></div>
+        <div class="tip"><span class="icon">3</span><p>Rút phích cắm thiết bị không dùng, như máy chiếu sau giờ học.</p></div>
+      </div>
+      <div class="card swap" data-img="images/tiet-kiem-nuoc.jpg" data-alt="Vòi nước có cây non mọc lên và bóng đèn chứa cây xanh, tượng trưng cho tiết kiệm nước và năng lượng">
+        <h3>Tiết kiệm nước</h3>
+        <div class="tip"><span class="icon">1</span><p>Khóa vòi kỹ sau khi rửa tay, không để nước chảy liên tục.</p></div>
+        <div class="tip"><span class="icon">2</span><p>Báo ngay cho thầy cô hoặc bảo vệ khi vòi nước bị rò rỉ.</p></div>
+        <div class="tip"><span class="icon">3</span><p>Dùng nước đã rửa rau để tưới cây khi phù hợp.</p></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px">
+      <h3>Chăm sóc cây xanh trong trường</h3>
+      <div class="tip"><span class="icon">1</span><p>Tưới cây vào buổi sáng sớm hoặc chiều mát để nước không bốc hơi nhanh.</p></div>
+      <div class="tip"><span class="icon">2</span><p>Nhặt lá khô và rác quanh gốc cây, giữ khu vườn sạch đẹp.</p></div>
+      <div class="tip"><span class="icon">3</span><p>Ghi lại tên cây và ngày tưới trên bảng nhỏ để cả lớp cùng theo dõi.</p></div>
+    </div>
+
+    <div class="card" style="margin-top:22px">
+      <h3>Thử nghiệm nhỏ ở trường</h3>
+      <div class="tip"><span class="icon">1</span><p>Đo lượng nước của một ca tưới bằng can có vạch chia, rồi ghi lại mỗi tuần để so sánh.</p></div>
+      <div class="tip"><span class="icon">2</span><p>Thử treo biển nhắc tắt đèn ở cửa lớp trong một tuần và đếm số lần đèn được tắt đúng lúc.</p></div>
+      <div class="tip"><span class="icon">3</span><p>Chọn cách làm có kết quả tốt nhất và đề xuất cả lớp cùng áp dụng.</p></div>
+    </div>
+
+    <p class="note" style="margin-top:22px">Nhấp đúp vào ô "Tiết kiệm điện" hoặc "Tiết kiệm nước" để đổi qua lại giữa chữ và hình minh họa.</p>
+  </section>
+
+  <!-- TRANG 4: NGUỒN, DỮ LIỆU VÀ KHẢO SÁT -->
+  <section class="page" id="khao-sat" aria-label="Nguồn tư liệu và khảo sát">
+    <h2>Nguồn tư liệu và khảo sát ý kiến</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Nguồn</th><th>Lý do đáng tin</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Nguồn 1:</strong> Luật Bảo vệ môi trường 2020 (Quốc hội ban hành), phần quy định về phân loại chất thải rắn sinh hoạt.</td>
+            <td>Văn bản pháp luật chính thức, do cơ quan lập pháp ban hành, nên là căn cứ để nêu trách nhiệm phân loại rác.</td>
+          </tr>
+          <tr>
+            <td><strong>Nguồn 2:</strong> Hướng dẫn phân loại rác tại nguồn của Bộ Tài nguyên và Môi trường.</td>
+            <td>Cơ quan quản lý nhà nước về môi trường công bố, giúp thông tin phân loại rác được chính xác và thống nhất.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- KHẢO SÁT -->
+    <form class="survey" id="survey-form" novalidate>
+      <h2 style="margin-bottom:6px">Khảo sát ý kiến (ẩn danh)</h2>
+      <p class="note" style="margin-bottom:22px">Chỉ mất khoảng hai phút. Câu trả lời giúp nhóm hoàn thiện trang web.</p>
+
+      <fieldset class="q">
+        <legend>1. Em thuộc nhóm nào?</legend>
+        <label class="opt"><input type="radio" name="q1" value="Học sinh"> Học sinh</label>
+        <label class="opt"><input type="radio" name="q1" value="Giáo viên"> Giáo viên</label>
+        <label class="opt"><input type="radio" name="q1" value="Phụ huynh"> Phụ huynh</label>
+        <label class="opt"><input type="radio" name="q1" value="Khác"> Khác</label>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>2. Hiện tại em có biết cách phân loại ba nhóm rác không?</legend>
+        <label class="opt"><input type="radio" name="q2" value="Biết rõ"> Biết rõ</label>
+        <label class="opt"><input type="radio" name="q2" value="Biết một phần"> Biết một phần</label>
+        <label class="opt"><input type="radio" name="q2" value="Chưa biết"> Chưa biết</label>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>3. Việc nào em sẽ làm thường xuyên nhất sau khi xem trang web?</legend>
+        <label class="opt"><input type="radio" name="q3" value="Phân loại rác"> Phân loại rác</label>
+        <label class="opt"><input type="radio" name="q3" value="Tắt đèn, quạt"> Tắt đèn, quạt</label>
+        <label class="opt"><input type="radio" name="q3" value="Khóa vòi nước"> Khóa vòi nước</label>
+        <label class="opt"><input type="radio" name="q3" value="Chăm cây xanh"> Chăm cây xanh</label>
+      </fieldset>
+
+      <fieldset class="q">
+        <legend>4. Trang web dễ xem và dễ hiểu ở mức nào? (1 là rất khó, 5 là rất dễ)</legend>
+        <div class="scale">
+          <label class="opt"><input type="radio" name="q4" value="1"> 1</label>
+          <label class="opt"><input type="radio" name="q4" value="2"> 2</label>
+          <label class="opt"><input type="radio" name="q4" value="3"> 3</label>
+          <label class="opt"><input type="radio" name="q4" value="4"> 4</label>
+          <label class="opt"><input type="radio" name="q4" value="5"> 5</label>
+        </div>
+      </fieldset>
+
+      <div class="q">
+        <label for="q5" class="q legend" style="font-weight:700;display:block;margin-bottom:10px">5. Em muốn trang web có thêm nội dung gì? (không bắt buộc)</label>
+        <textarea id="q5" name="q5" maxlength="300" placeholder="Ví dụ: thêm trò chơi phân loại rác, thêm video hướng dẫn..."></textarea>
+      </div>
+
+      <button type="submit">Gửi ý kiến</button>
+      <p class="error" id="survey-error" role="alert"></p>
+    </form>
+
+  </section>
+
+</main>
+
+<footer>
+  Dự án STEAM · Trường học xanh, an toàn và thông minh
+</footer>
+
+<script>
+(function(){
+  var pages = ["trang-chu","phan-loai-rac","tiet-kiem","khao-sat"];
+  var links = document.querySelectorAll(".nav a");
+
+  // Điều hướng theo hash
+  function show(){
+    var name = (location.hash || "#trang-chu").slice(1);
+    if (pages.indexOf(name) === -1) name = "trang-chu";
+    pages.forEach(function(p){
+      var el = document.getElementById(p);
+      if (el) el.classList.toggle("active", p === name);
+    });
+    links.forEach(function(a){
+      if (a.getAttribute("data-nav") === name) a.setAttribute("aria-current","page");
+      else a.removeAttribute("aria-current");
+    });
+    window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange", show);
+  show();
+
+  // Nhấp đúp vào trang "Tiết kiệm" để hiện hình ảnh minh họa
+  document.querySelectorAll(".card.swap").forEach(function(card){
+    var original = card.innerHTML;
+    var showingImage = false;
+    card.addEventListener("dblclick", function(){
+      if (!showingImage) {
+        var img = document.createElement("img");
+        img.src = card.getAttribute("data-img");
+        img.alt = card.getAttribute("data-alt");
+        card.innerHTML = "";
+        card.classList.add("swapped");
+        card.appendChild(img);
+        showingImage = true;
+      } else {
+        card.innerHTML = original;
+        card.classList.remove("swapped");
+        showingImage = false;
+      }
+    });
+  });
+
+  // Chữ hiện dần khi cuộn tới (nếu trình duyệt không hỗ trợ thì hiển thị luôn)
+  if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('js');
+    var groups = {};
+    document.querySelectorAll('.page h1, .page h2, .page h3, .page p, .page li').forEach(function(el){
+      el.classList.add('reveal');
+      var page = el.closest('.page').id;
+      groups[page] = (groups[page] || 0) + 1;
+      el.style.setProperty('--d', ((groups[page] - 1) % 5) * 60 + 'ms');
+    });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          io.unobserve(en.target);
+        }
+      });
+    }, {threshold: 0.12, rootMargin: '0px 0px -6% 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  }
+
+  // Khảo sát
+  var KEY = "truong-hoc-xanh-khao-sat";
+  var labels = {
+    q1: ["Học sinh","Giáo viên","Phụ huynh","Khác"],
+    q2: ["Biết rõ","Biết một phần","Chưa biết"],
+    q3: ["Phân loại rác","Tắt đèn, quạt","Khóa vòi nước","Chăm cây xanh"],
+    q4: ["1","2","3","4","5"]
+  };
+  var titles = {
+    q1: "1. Nhóm người trả lời",
+    q2: "2. Hiểu biết về phân loại rác",
+    q3: "3. Việc sẽ làm thường xuyên nhất",
+    q4: "4. Mức độ dễ xem và dễ hiểu"
+  };
+
+  function load(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function save(list){
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){}
+  }
+
+  function render(list){
+    var box = document.getElementById("charts");
+    box.innerHTML = "";
+    document.getElementById("results").classList.add("show");
+    document.getElementById("results-note").textContent =
+      "Tổng số ý kiến đã ghi nhận trên trình duyệt này: " + list.length + ". Để tổng hợp từ nhiều người, hãy nối biểu mẫu với Google Forms.";
+    Object.keys(labels).forEach(function(q){
+      var counts = labels[q].map(function(l){
+        return list.filter(function(r){ return r[q] === l; }).length;
+      });
+      var max = Math.max.apply(null, counts.concat([1]));
+      var title = document.createElement("div");
+      title.className = "chart-title";
+      title.textContent = titles[q];
+      box.appendChild(title);
+      labels[q].forEach(function(l,i){
+        var row = document.createElement("div");
+        row.className = "bar-row";
+        var name = document.createElement("span");
+        name.textContent = l;
+        var track = document.createElement("div");
+        track.className = "bar-track";
+        var fill = document.createElement("div");
+        fill.className = "bar-fill";
+        fill.style.width = (counts[i] / max * 100) + "%";
+        track.appendChild(fill);
+        var val = document.createElement("span");
+        val.className = "bar-val";
+        val.textContent = counts[i];
+        row.appendChild(name); row.appendChild(track); row.appendChild(val);
+        box.appendChild(row);
+      });
+    });
+  }
+
+  var form = document.getElementById("survey-form");
+  var err = document.getElementById("survey-error");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var data = {};
+    var missing = [];
+    ["q1","q2","q3","q4"].forEach(function(q){
+      var checked = form.querySelector('input[name="' + q + '"]:checked');
+      if (checked) data[q] = checked.value; else missing.push(q);
+    });
+    if (missing.length){
+      err.textContent = "Em hãy trả lời đủ các câu 1 đến 4 trước khi gửi.";
+      return;
+    }
+    err.textContent = "";
+    data.q5 = form.q5.value.trim();
+    data.time = new Date().toISOString();
+    var list = load();
+    list.push(data);
+    save(list);
+    form.reset();
+  });
+
+
+})();
+</script>
+</body>
+</html>
